@@ -89,6 +89,16 @@
                 }
         */
 
+        // temporary:
+        var maxAttempts = ReliableConnection.defaults.attempts,
+            delays = ReliableConnection.defaults.delays;
+
+        var $p = function (cb) {
+            return new Promise(cb);
+        };
+        $p.resolve = Promise.resolve;
+        $p.reject = Promise.reject;
+
         /**
          * @method ReliableConnection#start
          * @description
@@ -119,18 +129,46 @@
          * Notifies the driver of the lost connection, to trigger reconnection attempts.
          */
         this.disconnect = function () {
-
+            reconnect();
         };
 
-    }
-
-    function notifyStatus(cb, status, data) {
-        if (typeof cb === 'function') {
-            var self = this;
-            setTimeout(function () {
-                cb.call(self, status, data);
+        function reconnect(attempt) {
+            var delay = attempt &lt; delays.length ? delays[attempt] : delays[delays.length - 1];
+            return $p(function (resolve, reject) {
+                setTimeout(function () {
+                    // the state may have changed here
+                    config.connect()
+                        .then(function (obj) {
+                            notifyStatus('connected', {
+                                connection: obj
+                            });
+                            resolve(obj);
+                        })
+                        .catch(function (error) {
+                            notifyStatus('error', {
+                                error: error
+                            });
+                            if (++attempt &lt; maxAttempts) {
+                                reconnect(attempt)
+                                    .then(resolve)
+                                    .catch(reject);
+                            } else {
+                                reject(error);
+                            }
+                        });
+                }, delay);
             });
         }
+
+        function notifyStatus(cb, status, data) {
+            if (typeof cb === 'function') {
+                var self = this;
+                setTimeout(function () {
+                    cb.call(self, status, data);
+                });
+            }
+        }
+
     }
 
     /**

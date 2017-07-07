@@ -1,8 +1,5 @@
 # reliable-connection
 
-Asynchronous reliable connection
+Reliable virtual connection, fully asynchronous.
 
-**This is an experimental project, not to be used yet.**
-
-
-
+This project is in its early stage of development, currently formulating [the protocol](http://vitaly-t.github.io/reliable-connection). 

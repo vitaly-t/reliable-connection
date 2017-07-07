@@ -41,7 +41,7 @@
      * @param {number} [config.attempts=10]
      * Maximum number of connection attempts.
      *
-     * @param {number | number[]} [config.delays=[100, 1000, 5000, 30000]]
+     * @param {number | number[]} [config.delays=[100, 1000, 5000]]
      * Delays between connection attempts, in milliseconds.
      *
      * It can be either a single delay, or an array of delays. The last delay in the array
@@ -66,28 +66,28 @@
             throw new TypeError('Invalid configuration object.');
         }
 
-/*
-        var attempts = ReliableConnection.defaults.attempts,
-            delays = ReliableConnection.defaults.delays;
+        /*
+                var attempts = ReliableConnection.defaults.attempts,
+                    delays = ReliableConnection.defaults.delays;
 
-        if ('attempts' in config) {
+                if ('attempts' in config) {
 
-        }
+                }
 
-        if ('delays' in config) {
-            if (Array.isArray(config.delays)) {
-                delays = config.delays.map(function(value, idx) {
-                    var d = parseInt(value);
-                    if (isFinite(d) &amp;&amp; d >= 0) {
-                        return d;
+                if ('delays' in config) {
+                    if (Array.isArray(config.delays)) {
+                        delays = config.delays.map(function(value, idx) {
+                            var d = parseInt(value);
+                            if (isFinite(d) &amp;&amp; d >= 0) {
+                                return d;
+                            }
+                            throw new TypeError('Invalid delay value at position ' + idx);
+                        });
+                    } else {
+                        delays = config.delays >= 0 ? [parseInt(config.delays)] : defaults.delays;
                     }
-                    throw new TypeError('Invalid delay value at position ' + idx);
-                });
-            } else {
-                delays = config.delays >= 0 ? [parseInt(config.delays)] : defaults.delays;
-            }
-        }
-*/
+                }
+        */
 
         /**
          * @method ReliableConnection#start
@@ -146,24 +146,31 @@
      *  - Immediately following instantiation of the class (the default state)
      *  - After reaching the state of `failed`
      *  - After reaching the state of `stopped`
+     *  - After calling method `disconnect`
      *
      * `data` = previous state: `undefined` when the class was just created,
-     *  or `stopped`/`failed` otherwise.
+     *  or `stopped`/`failed`/`disconnected` otherwise.
      *
      * @property connected
      * The connection just has been established.
      *
      * `data` - an object with connection details + statistics:
-     *  - `connection` - the object that represents the connection
-     *  - `success` - number of times the connection has been established since
-     *     the class was created or method `stop` was called.
-     *  - `attempts` - number of attempts it took to successfully connect
+     *  - `connection` - the object that represents the connection, which is the value resolved by `onConnect`
+     *  - `success` - number of times the connection has been established since the class was created
+     *     or method `stop` was called.
+     *  - `attempts` - number of attempts in the session it took to successfully connect
      *
      * @property disconnected
-     * method `disconnect` just has been called
+     * Method `disconnect` just has been called.
+     *
+     * `data` = `undefined` (not used)
      *
      * @property connecting
-     * trying to connect
+     * Trying to connect.
+     *
+     * `data` - connection statistics object:
+     *  - `start` - Date/Time when the current session started
+     *  - `attempt` - number of previous unsuccessful attempts in the current connection session.
      *
      * @property failed
      * Permanent failure, after the maximum number of attempts has been reached.
@@ -193,11 +200,15 @@
     /**
      * @member ReliableConnection.defaults
      * @description
-     * Default connection configuration.
+     * Default configuration parameters.
+     *
+     * @property {number} attempts
+     *
+     * @property {number[]} delays
      */
     ReliableConnection.defaults = {
         attempts: 10,
-        delays: [100, 1000, 5000, 30000]
+        delays: [100, 1000, 5000]
     };
 
     /* istanbul ignore else */

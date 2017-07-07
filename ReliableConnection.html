@@ -199,7 +199,7 @@
             
                 <td class="default">
                 
-                    [100, 1000, 5000, 30000]
+                    [100, 1000, 5000]
                 
                 </td>
             
@@ -396,11 +396,86 @@ is reused when the number of attempts is greater than the array's length.</p></t
 
 
 <div class="description">
-    <p>Default connection configuration.</p>
+    <p>Default configuration parameters.</p>
 </div>
 
 
 
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>attempts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>delays</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -434,7 +509,7 @@ is reused when the number of attempts is greater than the array's length.</p></t
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line164">line 164</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line171">line 171</a>
     </li></ul></dd>
     
 
@@ -520,9 +595,10 @@ is reused when the number of attempts is greater than the array's length.</p></t
 <li>Immediately following instantiation of the class (the default state)</li>
 <li>After reaching the state of <code>failed</code></li>
 <li>After reaching the state of <code>stopped</code></li>
+<li>After calling method <code>disconnect</code></li>
 </ul>
 <p><code>data</code> = previous state: <code>undefined</code> when the class was just created,
- or <code>stopped</code>/<code>failed</code> otherwise.</p></td>
+ or <code>stopped</code>/<code>failed</code>/<code>disconnected</code> otherwise.</p></td>
         </tr>
 
     
@@ -543,10 +619,10 @@ is reused when the number of attempts is greater than the array's length.</p></t
             <td class="description last"><p>The connection just has been established.</p>
 <p><code>data</code> - an object with connection details + statistics:</p>
 <ul>
-<li><code>connection</code> - the object that represents the connection</li>
-<li><code>success</code> - number of times the connection has been established since
- the class was created or method <code>stop</code> was called.</li>
-<li><code>attempts</code> - number of attempts it took to successfully connect</li>
+<li><code>connection</code> - the object that represents the connection, which is the value resolved by <code>onConnect</code></li>
+<li><code>success</code> - number of times the connection has been established since the class was created
+ or method <code>stop</code> was called.</li>
+<li><code>attempts</code> - number of attempts in the session it took to successfully connect</li>
 </ul></td>
         </tr>
 
@@ -565,7 +641,8 @@ is reused when the number of attempts is greater than the array's length.</p></t
 
             
 
-            <td class="description last"><p>method <code>disconnect</code> just has been called</p></td>
+            <td class="description last"><p>Method <code>disconnect</code> just has been called.</p>
+<p><code>data</code> = <code>undefined</code> (not used)</p></td>
         </tr>
 
     
@@ -583,7 +660,12 @@ is reused when the number of attempts is greater than the array's length.</p></t
 
             
 
-            <td class="description last"><p>trying to connect</p></td>
+            <td class="description last"><p>Trying to connect.</p>
+<p><code>data</code> - connection statistics object:</p>
+<ul>
+<li><code>start</code> - Date/Time when the current session started</li>
+<li><code>attempt</code> - number of previous unsuccessful attempts in the current connection session.</li>
+</ul></td>
         </tr>
 
     

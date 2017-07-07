@@ -4,6 +4,9 @@
     "node": true,
     "jasmine": true
   },
+  "globals": {
+    "Promise": true
+  },
   "extends": "eslint:recommended",
   "parserOptions": {
   },

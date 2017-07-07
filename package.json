@@ -1,6 +1,6 @@
 {
   "name": "reliable-connection",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Asynchronous reliable connection",
   "main": "lib/index.js",
   "scripts": {
